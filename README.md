@@ -1,4 +1,5 @@
 # Hevery
+[![Latest release](https://img.shields.io/github/release/int02h/hevery.svg)](https://github.com/int02h/hevery/releases/latest)
 
 Hevery allows you to write [Git Hooks](https://git-scm.com/docs/githooks) in JVM languages. 
 Now there is support for the following ones:
