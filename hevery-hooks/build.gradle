@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group 'com.dpforge'
+version '0.0.1'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(dir: new File(rootDir, 'common-libs').absolutePath, include: ['*.jar'])
+}
+
+

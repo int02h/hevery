@@ -1,0 +1,22 @@
+/**
+ * The main purpose of this module is to ensure that all hooks are compiled successfully
+ */
+
+plugins {
+    id 'java'
+}
+
+group 'com.dpforge'
+version '0.0.1'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':hevery-hooks')
+
+    implementation fileTree(dir: new File(rootDir, 'common-libs').absolutePath, include: ['*.jar'])
+}

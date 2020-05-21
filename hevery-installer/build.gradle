@@ -1,0 +1,72 @@
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
+plugins {
+    id 'java'
+}
+
+group 'com.dpforge'
+version '0.0.1'
+
+ext.HEVERY_DIR = "hevery"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.dpforge.hevery.installer.InstallerMain'
+        )
+    }
+}
+
+def packContent = tasks.create("packContent") {
+
+    def cliProject = project(":hevery-cli")
+    def hooksProject = project(":hevery-hooks")
+
+    def cliJarTask = cliProject.tasks.findByName("jar")
+    def hooksJarTask = hooksProject.tasks.findByName("jar")
+
+    dependsOn(cliJarTask, hooksJarTask)
+
+    doLast {
+        def resourcesDir = sourceSets.main.resources.srcDirs.first()
+        if (!resourcesDir.exists()) {
+            resourcesDir.mkdirs()
+        }
+        def contentDir = new File(rootDir, "installer-content/src/main")
+        ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(new File(resourcesDir, "content.zip")))
+
+        packToZip(new File(contentDir, "resources"), zipFile, "")
+        packToZip(new File(contentDir, "java"), zipFile, "$HEVERY_DIR")
+        packToZip(new File(cliProject.buildDir, "libs"), zipFile, "$HEVERY_DIR/bin")
+        packToZip(new File(hooksProject.buildDir, "libs"), zipFile, "$HEVERY_DIR/libs")
+        packToZip(new File(rootDir, "common-libs"), zipFile, "$HEVERY_DIR/libs")
+
+        zipFile.close()
+    }
+}
+
+static def packToZip(File dir, ZipOutputStream zip, String zipPath) {
+    if (!zipPath.isEmpty()) {
+        zipPath = zipPath + "/"
+    }
+    dir.traverse { file ->
+        if (file.isFile()) {
+            zip.putNextEntry(new ZipEntry(zipPath + file.name))
+            def buffer = new byte[file.size()]
+            file.withInputStream {
+                zip.write(buffer, 0, it.read(buffer))
+            }
+            zip.closeEntry()
+        }
+    }
+
+}
+
+tasks.findByName("processResources").dependsOn(packContent)

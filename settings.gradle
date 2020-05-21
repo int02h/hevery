@@ -1,0 +1,3 @@
+rootProject.name = 'hevery'
+include 'hevery-cli', 'hevery-hooks', 'hevery-installer', 'installer-content'
+

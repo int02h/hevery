@@ -1,0 +1,7 @@
+#!/bin/sh
+
+ME=$(basename "$0")
+HEVERY_DIR="$(dirname $0)/hevery"
+CLASSPATH="$HEVERY_DIR/bin/*:$HEVERY_DIR/libs/*"
+
+java -cp $CLASSPATH com.dpforge.hevery.cli.Main $HEVERY_DIR $ME
